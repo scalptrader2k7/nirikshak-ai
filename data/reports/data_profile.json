@@ -1,0 +1,344 @@
+{
+  "timestamp": "2026-08-28T20:35:59.443058",
+  "dataset_file": "mplads_raw.csv",
+  "total_rows": 742,
+  "total_columns": 15,
+  "column_names": [
+    "MP NAME",
+    "WORK",
+    "CATEGORY",
+    "STATE",
+    "CONSTITUENCY",
+    "IDA",
+    "CITY",
+    "WARD",
+    "BLOCK",
+    "VILLAGE",
+    "RECOMMENDED DATE",
+    "ALLOCATION AMOUNT",
+    "IDA APPROVAL",
+    "STATUS",
+    "HOUSE"
+  ],
+  "missing_counts": {
+    "MP NAME": 0,
+    "WORK": 0,
+    "CATEGORY": 0,
+    "STATE": 0,
+    "CONSTITUENCY": 0,
+    "IDA": 0,
+    "CITY": 640,
+    "WARD": 640,
+    "BLOCK": 102,
+    "VILLAGE": 102,
+    "RECOMMENDED DATE": 0,
+    "ALLOCATION AMOUNT": 0,
+    "IDA APPROVAL": 0,
+    "STATUS": 1,
+    "HOUSE": 0
+  },
+  "missing_percentage": {
+    "MP NAME": 0.0,
+    "WORK": 0.0,
+    "CATEGORY": 0.0,
+    "STATE": 0.0,
+    "CONSTITUENCY": 0.0,
+    "IDA": 0.0,
+    "CITY": 86.25336927223721,
+    "WARD": 86.25336927223721,
+    "BLOCK": 13.746630727762804,
+    "VILLAGE": 13.746630727762804,
+    "RECOMMENDED DATE": 0.0,
+    "ALLOCATION AMOUNT": 0.0,
+    "IDA APPROVAL": 0.0,
+    "STATUS": 0.13477088948787064,
+    "HOUSE": 0.0
+  },
+  "unique_counts": {
+    "MP NAME": 72,
+    "WORK": 54,
+    "CATEGORY": 2,
+    "STATE": 24,
+    "CONSTITUENCY": 55,
+    "IDA": 84,
+    "CITY": 54,
+    "WARD": 84,
+    "BLOCK": 165,
+    "VILLAGE": 483,
+    "RECOMMENDED DATE": 9,
+    "ALLOCATION AMOUNT": 95,
+    "IDA APPROVAL": 2,
+    "STATUS": 2,
+    "HOUSE": 2
+  },
+  "exact_duplicate_rows": 128,
+  "duplicate_percentage": 17.25067385444744,
+  "numeric_stats": {
+    "allocation_amount": {
+      "summary": {
+        "min": 16300.0,
+        "max": 5000000.0,
+        "mean": 408377.7911051213,
+        "median": 300000.0,
+        "std": 448728.509554445
+      },
+      "suspicious_negatives": 0,
+      "suspicious_zeros": 0,
+      "malformed_count": 0
+    }
+  },
+  "date_parsing": {
+    "recommended_date": {
+      "total_filled": 742,
+      "parsed_successfully": 742,
+      "parse_failed": 0,
+      "success_percentage": 100.0,
+      "min_date": "2024-02-25",
+      "max_date": "2024-03-04"
+    }
+  },
+  "whitespace_issues": {
+    "MP NAME": {
+      "leading_trailing_count": 104,
+      "multi_space_count": 0
+    },
+    "WORK": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "CATEGORY": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "STATE": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "CONSTITUENCY": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "IDA": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "CITY": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "WARD": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "BLOCK": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "VILLAGE": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "RECOMMENDED DATE": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "IDA APPROVAL": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "STATUS": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    },
+    "HOUSE": {
+      "leading_trailing_count": 0,
+      "multi_space_count": 0
+    }
+  },
+  "casing_issues": {
+    "MP NAME": {
+      "original_unique_count": 72,
+      "normalized_unique_count": 72,
+      "has_casing_inconsistencies": false
+    },
+    "WORK": {
+      "original_unique_count": 54,
+      "normalized_unique_count": 54,
+      "has_casing_inconsistencies": false
+    },
+    "CATEGORY": {
+      "original_unique_count": 2,
+      "normalized_unique_count": 2,
+      "has_casing_inconsistencies": false
+    },
+    "STATE": {
+      "original_unique_count": 24,
+      "normalized_unique_count": 24,
+      "has_casing_inconsistencies": false
+    },
+    "CONSTITUENCY": {
+      "original_unique_count": 55,
+      "normalized_unique_count": 55,
+      "has_casing_inconsistencies": false
+    },
+    "IDA": {
+      "original_unique_count": 84,
+      "normalized_unique_count": 84,
+      "has_casing_inconsistencies": false
+    },
+    "CITY": {
+      "original_unique_count": 54,
+      "normalized_unique_count": 54,
+      "has_casing_inconsistencies": false
+    },
+    "WARD": {
+      "original_unique_count": 84,
+      "normalized_unique_count": 84,
+      "has_casing_inconsistencies": false
+    },
+    "BLOCK": {
+      "original_unique_count": 165,
+      "normalized_unique_count": 164,
+      "has_casing_inconsistencies": true
+    },
+    "VILLAGE": {
+      "original_unique_count": 483,
+      "normalized_unique_count": 483,
+      "has_casing_inconsistencies": false
+    },
+    "RECOMMENDED DATE": {
+      "original_unique_count": 9,
+      "normalized_unique_count": 9,
+      "has_casing_inconsistencies": false
+    },
+    "IDA APPROVAL": {
+      "original_unique_count": 2,
+      "normalized_unique_count": 2,
+      "has_casing_inconsistencies": false
+    },
+    "STATUS": {
+      "original_unique_count": 2,
+      "normalized_unique_count": 2,
+      "has_casing_inconsistencies": false
+    },
+    "HOUSE": {
+      "original_unique_count": 2,
+      "normalized_unique_count": 2,
+      "has_casing_inconsistencies": false
+    }
+  },
+  "categorical_distributions": {
+    "MP NAME": {
+      "Smt Jaya Bachchan": 168,
+      "Kani K Navas": 62,
+      "Mala Rajya Laxmi Shah": 44,
+      "Smt Rajashree Mallick ": 32,
+      "Shivkumar Chanabasappa Udasi": 31,
+      "Bishweswar Tudu": 24,
+      "Rahul Kaswan": 23,
+      "Mr Gopal Jee Thakur": 22,
+      "Smt Pramila Bisoyi ": 20,
+      "Gaddam Ranjith Reddy": 20
+    },
+    "WORK": {
+      "NA - Installing hand pumps": 165,
+      "NA - Construction of roads, link roads, pathways or any other road with or without drainage system": 134,
+      "NA - Lighting of public spaces": 96,
+      "NA - Construction of community centers and community halls": 72,
+      "NA - Street lights": 40,
+      "NA - Construction of rooms and halls in school and colleges": 26,
+      "NA - Construction of buildings for community cultural activities": 22,
+      "NA - Crematoriums or structures on burial/ cremation ground for public convenience": 17,
+      "NA - Construction of boundary walls of existing public and community buildings": 17,
+      "NA - Construction of additional rooms and halls in the existing public and community building": 17
+    },
+    "CATEGORY": {
+      "Normal/Others": 739,
+      "Repair and Renovation": 3
+    },
+    "STATE": {
+      "Uttar Pradesh": 200,
+      "Odisha": 141,
+      "Tamil Nadu": 71,
+      "Karnataka": 54,
+      "Rajasthan": 52,
+      "Maharashtra": 51,
+      "Uttarakhand": 45,
+      "Telangana": 26,
+      "Bihar": 25,
+      "Himachal Pradesh": 14
+    },
+    "CONSTITUENCY": {
+      "Sitting Rajya Sabha": 238,
+      "RAMANATHAPURAM": 62,
+      "TEHRI GARHWAL": 44,
+      "JAGATSINGHPUR(SC)": 32,
+      "HAVERI": 31,
+      "MAYURBHANJ (ST)": 24,
+      "CHURU": 23,
+      "DARBHANGA": 22,
+      "ASKA": 20,
+      "DINDORI(ST)": 20
+    },
+    "IDA": {
+      "DISTRICT MAGISTRATE BHADOHI_IDA": 168,
+      "DISTRICT COLLECTOR UTTARKASHI_IDA": 44,
+      "DISTRICT COLLECTOR RAMANATHAPURAM_IDA": 42,
+      "DISTRICT COLLECTOR MAYURBHANJ_IDA": 40,
+      "DISTRICT COLLECTOR NASHIK_IDA": 38,
+      "DISTRICT COLLECTOR JAGATSINGHPUR_IDA": 32,
+      "DEPUTY COMMISSIONER HAVERI_IDA": 31,
+      "DISTRICT COLLECTOR CHURU_IDA": 23,
+      "DISTRICT MAGISTRATE DARBANGA_IDA": 22,
+      "DISTRICT COLLECTOR GANJAM_IDA": 22
+    },
+    "CITY": {
+      "nan": 640,
+      "Lucknow": 6,
+      "Balurghat": 5,
+      "Naugaon": 5,
+      "Nagina": 5,
+      "Balrampur": 5,
+      "Haveri": 4,
+      "Aranthangi": 4,
+      "Benipur": 4,
+      "Kavisurjyanagar": 4
+    },
+    "WARD": {
+      "nan": 640,
+      "Baidyanathpara (OG) - Ward No.25": 5,
+      "Haveri (Cmc) - Ward No.1": 3,
+      "Mudukulathur (TP) - Ward No.1": 3,
+      "Aranthangi (M) - Ward No.1": 3,
+      "Balrampur (MB) - Ward No.11": 3,
+      "Naugaon (NP)- Mulaana Ward No.7": 2,
+      "Lucknow (M Corp.) - Ward No.43": 2,
+      "Naugaon (NP)- Naugaon Gaon Ward No.5": 2,
+      "Tulsipur (NP) - Ward No.11": 2
+    },
+    "RECOMMENDED DATE": {
+      "2024-03-03": 266,
+      "2024-02-25": 182,
+      "2024-03-01": 69,
+      "2024-02-29": 54,
+      "2024-03-02": 52,
+      "2024-02-27": 43,
+      "2024-03-04": 35,
+      "2024-02-28": 26,
+      "2024-02-26": 15
+    },
+    "IDA APPROVAL": {
+      "Action Pending": 734,
+      "Approved by IDA": 8
+    },
+    "STATUS": {
+      "Unsanctioned": 740,
+      "nan": 1,
+      "Ongoing": 1
+    },
+    "HOUSE": {
+      "Lok Sabha": 492,
+      "Rajya Sabha": 250
+    }
+  }
+}
