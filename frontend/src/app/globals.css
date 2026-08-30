@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* NIRIKSHAK AI — Core surfaces */
+  --background: #f7f8fa;
+  --foreground: #172033;
+  --surface: #ffffff;
+  --surface-muted: #f1f3f6;
+  --surface-subtle: #fafbfc;
+
+  /* Borders */
+  --border: #dfe3e8;
+  --border-strong: #c8ced6;
+
+  /* Brand / institutional accent */
+  --primary: #174a7e;
+  --primary-hover: #123b65;
+  --primary-soft: #e8f0f8;
+
+  /* Semantic risk system — hue-separated for fast scanning at a distance
+     (projector demos) and for red-green color-vision accessibility.
+     Low: green | Medium: amber | High: orange | Critical: red
+     Each pair progresses in hue, not just darkness, so the four levels
+     stay distinguishable even in grayscale or under color-vision deficiency. */
+  --risk-low: #2f7d5a;
+  --risk-low-soft: #eaf5ef;
+  --risk-medium: #a56a00;
+  --risk-medium-soft: #fff4df;
+  --risk-high: #c2410c;
+  --risk-high-soft: #fff0e6;
+  --risk-critical: #b91c1c;
+  --risk-critical-soft: #fbe9e9;
+
+  /* Supporting states */
+  --success: #2f7d5a;
+  --warning: #a56a00;
+  --danger: #b91c1c;
+  --info: #28658f;
+
+  /* Typography hierarchy */
+  --text-primary: #172033;
+  --text-secondary: #536071;
+  --text-muted: #748092;
+  --text-disabled: #9aa3af;
+
+  /* Focus */
+  --focus-ring: #4c8dcc;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-risk-low: var(--risk-low);
+  --color-risk-low-soft: var(--risk-low-soft);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-medium-soft: var(--risk-medium-soft);
+  --color-risk-high: var(--risk-high);
+  --color-risk-high-soft: var(--risk-high-soft);
+  --color-risk-critical: var(--risk-critical);
+  --color-risk-critical-soft: var(--risk-critical-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Accessible keyboard focus */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+/* Remove default button typography inconsistencies */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Better default button interaction */
+button {
+  cursor: pointer;
+}
+
+/* Prevent images from overflowing their containers */
+img,
+svg {
+  max-width: 100%;
+}
+
+/* Reduced-motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
