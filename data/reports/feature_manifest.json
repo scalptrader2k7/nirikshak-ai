@@ -1,0 +1,788 @@
+{
+  "timestamp": "2026-08-28T21:08:55.660276",
+  "total_engineered_features": 73,
+  "features": {
+    "normalized_work_text": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "string",
+      "description": "Lowercase work description with punctuation removed and whitespace collapsed.",
+      "transformation": "Text cleaning regex and space collapsing.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Does not capture semantic meaning."
+    },
+    "work_text_length": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "integer",
+      "description": "Character count of the raw work description.",
+      "transformation": "Character length count.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Varies by general wording style."
+    },
+    "work_word_count": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "integer",
+      "description": "Word count of the cleaned work description.",
+      "transformation": "Splitting text by whitespace.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Varies by general wording style."
+    },
+    "work_unique_word_count": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "integer",
+      "description": "Unique word count of the cleaned work description.",
+      "transformation": "Unique set split count.",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "work_type": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "string",
+      "description": "Primary convenience category mapping of the work description.",
+      "transformation": "Regex keyword matching with defined priorities: water > road > building > drainage > electrical > school > health > repair.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Heuristic-based convenience category; might map to 'other' if no keywords are matched."
+    },
+    "work_has_road_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'road'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'road'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "work_has_building_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'building'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'building'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "work_has_water_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'water'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'water'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "work_has_electrical_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'electrical'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'electrical'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "work_has_school_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'school'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'school'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "work_has_health_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'health'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'health'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "work_has_drainage_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'drainage'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'drainage'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "work_has_repair_keyword": {
+      "source_columns": [
+        "work"
+      ],
+      "data_type": "boolean",
+      "description": "True if work description contains matching keywords for 'repair'.",
+      "transformation": "Case-insensitive regex matching for keywords related to 'repair'.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Dependent on the predefined keyword dictionary."
+    },
+    "allocation_amount_log": {
+      "source_columns": [
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Natural log transform of the allocation amount (log1p).",
+      "transformation": "log(1 + x)",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "allocation_amount_percentile_global": {
+      "source_columns": [
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Percentile rank of the allocation amount across the entire dataset.",
+      "transformation": "Fractional rank from 0.0 to 1.0.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Highly dependent on the distribution of current sample."
+    },
+    "peer_state_count": {
+      "source_columns": [
+        "state"
+      ],
+      "data_type": "integer",
+      "description": "Total count of records sharing the same state.",
+      "transformation": "Group count by state.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset."
+    },
+    "peer_state_median_amount": {
+      "source_columns": [
+        "state",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Median allocation amount for the peer group sharing the same state.",
+      "transformation": "Group median. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_state_mean_amount": {
+      "source_columns": [
+        "state",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Mean allocation amount for the peer group sharing the same state.",
+      "transformation": "Group mean. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_state_std_amount": {
+      "source_columns": [
+        "state",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Standard deviation of allocation amount for the peer group sharing the same state.",
+      "transformation": "Group standard deviation. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "amount_vs_peer_state_median": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_state_median_amount"
+      ],
+      "data_type": "float",
+      "description": "Ratio of the record's allocation amount vs the peer median of group state.",
+      "transformation": "allocation_amount / peer_state_median_amount. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups."
+    },
+    "amount_zscore_peer_state": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_state_mean_amount",
+        "peer_state_std_amount"
+      ],
+      "data_type": "float",
+      "description": "Z-score of the allocation amount within peer group state.",
+      "transformation": "(amount - mean) / std. Set to NaN if group size < 5 or std is undefined/NaN.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups. Zero standard deviation maps to 0.0."
+    },
+    "peer_house_count": {
+      "source_columns": [
+        "house"
+      ],
+      "data_type": "integer",
+      "description": "Total count of records sharing the same house.",
+      "transformation": "Group count by house.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset."
+    },
+    "peer_house_median_amount": {
+      "source_columns": [
+        "house",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Median allocation amount for the peer group sharing the same house.",
+      "transformation": "Group median. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_house_mean_amount": {
+      "source_columns": [
+        "house",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Mean allocation amount for the peer group sharing the same house.",
+      "transformation": "Group mean. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_house_std_amount": {
+      "source_columns": [
+        "house",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Standard deviation of allocation amount for the peer group sharing the same house.",
+      "transformation": "Group standard deviation. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "amount_vs_peer_house_median": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_house_median_amount"
+      ],
+      "data_type": "float",
+      "description": "Ratio of the record's allocation amount vs the peer median of group house.",
+      "transformation": "allocation_amount / peer_house_median_amount. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups."
+    },
+    "amount_zscore_peer_house": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_house_mean_amount",
+        "peer_house_std_amount"
+      ],
+      "data_type": "float",
+      "description": "Z-score of the allocation amount within peer group house.",
+      "transformation": "(amount - mean) / std. Set to NaN if group size < 5 or std is undefined/NaN.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups. Zero standard deviation maps to 0.0."
+    },
+    "peer_mp_name_count": {
+      "source_columns": [
+        "mp_name"
+      ],
+      "data_type": "integer",
+      "description": "Total count of records sharing the same mp_name.",
+      "transformation": "Group count by mp_name.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset."
+    },
+    "peer_mp_name_median_amount": {
+      "source_columns": [
+        "mp_name",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Median allocation amount for the peer group sharing the same mp_name.",
+      "transformation": "Group median. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_mp_name_mean_amount": {
+      "source_columns": [
+        "mp_name",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Mean allocation amount for the peer group sharing the same mp_name.",
+      "transformation": "Group mean. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_mp_name_std_amount": {
+      "source_columns": [
+        "mp_name",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Standard deviation of allocation amount for the peer group sharing the same mp_name.",
+      "transformation": "Group standard deviation. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "amount_vs_peer_mp_name_median": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_mp_name_median_amount"
+      ],
+      "data_type": "float",
+      "description": "Ratio of the record's allocation amount vs the peer median of group mp_name.",
+      "transformation": "allocation_amount / peer_mp_name_median_amount. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups."
+    },
+    "amount_zscore_peer_mp_name": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_mp_name_mean_amount",
+        "peer_mp_name_std_amount"
+      ],
+      "data_type": "float",
+      "description": "Z-score of the allocation amount within peer group mp_name.",
+      "transformation": "(amount - mean) / std. Set to NaN if group size < 5 or std is undefined/NaN.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups. Zero standard deviation maps to 0.0."
+    },
+    "peer_constituency_count": {
+      "source_columns": [
+        "constituency"
+      ],
+      "data_type": "integer",
+      "description": "Total count of records sharing the same constituency.",
+      "transformation": "Group count by constituency.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset."
+    },
+    "peer_constituency_median_amount": {
+      "source_columns": [
+        "constituency",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Median allocation amount for the peer group sharing the same constituency.",
+      "transformation": "Group median. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_constituency_mean_amount": {
+      "source_columns": [
+        "constituency",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Mean allocation amount for the peer group sharing the same constituency.",
+      "transformation": "Group mean. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_constituency_std_amount": {
+      "source_columns": [
+        "constituency",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Standard deviation of allocation amount for the peer group sharing the same constituency.",
+      "transformation": "Group standard deviation. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "amount_vs_peer_constituency_median": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_constituency_median_amount"
+      ],
+      "data_type": "float",
+      "description": "Ratio of the record's allocation amount vs the peer median of group constituency.",
+      "transformation": "allocation_amount / peer_constituency_median_amount. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups."
+    },
+    "amount_zscore_peer_constituency": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_constituency_mean_amount",
+        "peer_constituency_std_amount"
+      ],
+      "data_type": "float",
+      "description": "Z-score of the allocation amount within peer group constituency.",
+      "transformation": "(amount - mean) / std. Set to NaN if group size < 5 or std is undefined/NaN.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups. Zero standard deviation maps to 0.0."
+    },
+    "peer_ida_count": {
+      "source_columns": [
+        "ida"
+      ],
+      "data_type": "integer",
+      "description": "Total count of records sharing the same ida.",
+      "transformation": "Group count by ida.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset."
+    },
+    "peer_ida_median_amount": {
+      "source_columns": [
+        "ida",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Median allocation amount for the peer group sharing the same ida.",
+      "transformation": "Group median. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_ida_mean_amount": {
+      "source_columns": [
+        "ida",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Mean allocation amount for the peer group sharing the same ida.",
+      "transformation": "Group mean. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_ida_std_amount": {
+      "source_columns": [
+        "ida",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Standard deviation of allocation amount for the peer group sharing the same ida.",
+      "transformation": "Group standard deviation. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "amount_vs_peer_ida_median": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_ida_median_amount"
+      ],
+      "data_type": "float",
+      "description": "Ratio of the record's allocation amount vs the peer median of group ida.",
+      "transformation": "allocation_amount / peer_ida_median_amount. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups."
+    },
+    "amount_zscore_peer_ida": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_ida_mean_amount",
+        "peer_ida_std_amount"
+      ],
+      "data_type": "float",
+      "description": "Z-score of the allocation amount within peer group ida.",
+      "transformation": "(amount - mean) / std. Set to NaN if group size < 5 or std is undefined/NaN.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups. Zero standard deviation maps to 0.0."
+    },
+    "peer_work_type_count": {
+      "source_columns": [
+        "work_type"
+      ],
+      "data_type": "integer",
+      "description": "Total count of records sharing the same work_type.",
+      "transformation": "Group count by work_type.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset."
+    },
+    "peer_work_type_median_amount": {
+      "source_columns": [
+        "work_type",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Median allocation amount for the peer group sharing the same work_type.",
+      "transformation": "Group median. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_work_type_mean_amount": {
+      "source_columns": [
+        "work_type",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Mean allocation amount for the peer group sharing the same work_type.",
+      "transformation": "Group mean. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "peer_work_type_std_amount": {
+      "source_columns": [
+        "work_type",
+        "allocation_amount"
+      ],
+      "data_type": "float",
+      "description": "Standard deviation of allocation amount for the peer group sharing the same work_type.",
+      "transformation": "Group standard deviation. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive statistic of current dataset. Suppressed for small groups."
+    },
+    "amount_vs_peer_work_type_median": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_work_type_median_amount"
+      ],
+      "data_type": "float",
+      "description": "Ratio of the record's allocation amount vs the peer median of group work_type.",
+      "transformation": "allocation_amount / peer_work_type_median_amount. Set to NaN if group size < 5.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups."
+    },
+    "amount_zscore_peer_work_type": {
+      "source_columns": [
+        "allocation_amount",
+        "peer_work_type_mean_amount",
+        "peer_work_type_std_amount"
+      ],
+      "data_type": "float",
+      "description": "Z-score of the allocation amount within peer group work_type.",
+      "transformation": "(amount - mean) / std. Set to NaN if group size < 5 or std is undefined/NaN.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive comparison only. Suppressed for small groups. Zero standard deviation maps to 0.0."
+    },
+    "recommendation_year": {
+      "source_columns": [
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Calendar year extracted from recommended_date.",
+      "transformation": "Datetime year component.",
+      "use_for_anomaly_detection": false,
+      "limitations": "None."
+    },
+    "recommendation_month": {
+      "source_columns": [
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Calendar month (1-12) extracted from recommended_date.",
+      "transformation": "Datetime month component.",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "recommendation_quarter": {
+      "source_columns": [
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Calendar quarter (1-4) extracted from recommended_date.",
+      "transformation": "Datetime quarter component.",
+      "use_for_anomaly_detection": false,
+      "limitations": "None."
+    },
+    "recommendation_day_of_week": {
+      "source_columns": [
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Day of the week (0=Monday to 6=Sunday) extracted from recommended_date.",
+      "transformation": "Datetime dayofweek component.",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "recommendation_day_of_month": {
+      "source_columns": [
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Day of the month (1-31) extracted from recommended_date.",
+      "transformation": "Datetime day component.",
+      "use_for_anomaly_detection": false,
+      "limitations": "None."
+    },
+    "mp_recommendations_in_month": {
+      "source_columns": [
+        "mp_name",
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Count of recommendations made by the same MP in that calendar month.",
+      "transformation": "Group count by MP and Year-Month.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive calendar-month aggregate. Boundary effects apply at month start/end."
+    },
+    "constituency_recommendations_in_month": {
+      "source_columns": [
+        "constituency",
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Count of recommendations made in the same constituency in that calendar month.",
+      "transformation": "Group count by constituency and Year-Month.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Descriptive calendar-month aggregate. Boundary effects apply."
+    },
+    "mp_recommendations_rolling_30d": {
+      "source_columns": [
+        "mp_name",
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Rolling count of recommendations made by the same MP in the last 30 days.",
+      "transformation": "Chronomax rolling window count [T-30d, T] up to current record. Leakage-free.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Requires sorted historical alignment. Sensitive to date correctness."
+    },
+    "constituency_recommendations_rolling_30d": {
+      "source_columns": [
+        "constituency",
+        "recommended_date"
+      ],
+      "data_type": "integer",
+      "description": "Rolling count of recommendations made in the same constituency in the last 30 days.",
+      "transformation": "Chronomax rolling window count [T-30d, T] up to current record. Leakage-free.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Requires sorted historical alignment."
+    },
+    "has_city": {
+      "source_columns": [
+        "city"
+      ],
+      "data_type": "boolean",
+      "description": "True if city is populated.",
+      "transformation": "Non-null and non-empty checks.",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "has_ward": {
+      "source_columns": [
+        "ward"
+      ],
+      "data_type": "boolean",
+      "description": "True if ward is populated.",
+      "transformation": "Non-null and non-empty checks.",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "has_block": {
+      "source_columns": [
+        "block"
+      ],
+      "data_type": "boolean",
+      "description": "True if block is populated.",
+      "transformation": "Non-null and non-empty checks.",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "has_village": {
+      "source_columns": [
+        "village"
+      ],
+      "data_type": "boolean",
+      "description": "True if village is populated.",
+      "transformation": "Non-null and non-empty checks.",
+      "use_for_anomaly_detection": true,
+      "limitations": "None."
+    },
+    "location_completeness_score": {
+      "source_columns": [
+        "state",
+        "constituency",
+        "city",
+        "ward",
+        "block",
+        "village"
+      ],
+      "data_type": "float",
+      "description": "Fraction of location columns containing valid values.",
+      "transformation": "Count of populated location columns / 6.",
+      "use_for_anomaly_detection": true,
+      "limitations": "Assumes equal weight for all location dimensions."
+    },
+    "location_key": {
+      "source_columns": [
+        "state",
+        "constituency",
+        "city",
+        "ward",
+        "block",
+        "village"
+      ],
+      "data_type": "string",
+      "description": "Deterministic pipe-separated location key.",
+      "transformation": "Joining non-empty location values.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Empty fields are left blank within the separators."
+    },
+    "mp_work_count": {
+      "source_columns": [
+        "mp_name"
+      ],
+      "data_type": "integer",
+      "description": "Total count of works recommended by this MP in the current dataset.",
+      "transformation": "Global dataset count per MP.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive feature of the current sample."
+    },
+    "constituency_work_count": {
+      "source_columns": [
+        "constituency"
+      ],
+      "data_type": "integer",
+      "description": "Total count of works recommended in this constituency in the current dataset.",
+      "transformation": "Global dataset count per constituency.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive feature of the current sample."
+    },
+    "state_work_count": {
+      "source_columns": [
+        "state"
+      ],
+      "data_type": "integer",
+      "description": "Total count of works recommended in this state in the current dataset.",
+      "transformation": "Global dataset count per state.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive feature of the current sample."
+    },
+    "ida_work_count": {
+      "source_columns": [
+        "ida"
+      ],
+      "data_type": "integer",
+      "description": "Total count of works assigned to this IDA in the current dataset.",
+      "transformation": "Global dataset count per IDA.",
+      "use_for_anomaly_detection": false,
+      "limitations": "Descriptive feature of the current sample."
+    },
+    "is_exact_duplicate": {
+      "source_columns": [
+        "duplicate_occurrence_count"
+      ],
+      "data_type": "boolean",
+      "description": "True if duplicate_occurrence_count is greater than 1.",
+      "transformation": "duplicate_occurrence_count > 1",
+      "use_for_anomaly_detection": true,
+      "limitations": "Only identifies exact duplicates."
+    },
+    "blocking_key_work_type_state": {
+      "source_columns": [
+        "work_type",
+        "state"
+      ],
+      "data_type": "string",
+      "description": "Candidate key combining work_type and state for near-duplicate candidate blocking.",
+      "transformation": "Concatenation of work_type and state in lowercase.",
+      "use_for_anomaly_detection": false,
+      "limitations": "None."
+    },
+    "blocking_key_work_type_constituency": {
+      "source_columns": [
+        "work_type",
+        "constituency"
+      ],
+      "data_type": "string",
+      "description": "Candidate key combining work_type and constituency for near-duplicate candidate blocking.",
+      "transformation": "Concatenation of work_type and constituency in lowercase.",
+      "use_for_anomaly_detection": false,
+      "limitations": "None."
+    }
+  }
+}
