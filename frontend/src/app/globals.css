@@ -45,9 +45,21 @@
 
   /* Focus */
   --focus-ring: #4c8dcc;
+
+  /* Gateway / Landing page tokens (scoped exception) */
+  --gateway-navy: #102d49;
+  --gateway-navy-deep: #0b2136;
+  --gateway-accent: #d8b45c;
+  --gateway-accent-light: #e6ca7c;
+  --gateway-ivory: #f4f2ec;
 }
 
 @theme inline {
+  --color-gateway-navy: var(--gateway-navy);
+  --color-gateway-navy-deep: var(--gateway-navy-deep);
+  --color-gateway-accent: var(--gateway-accent);
+  --color-gateway-accent-light: var(--gateway-accent-light);
+  --color-gateway-ivory: var(--gateway-ivory);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
