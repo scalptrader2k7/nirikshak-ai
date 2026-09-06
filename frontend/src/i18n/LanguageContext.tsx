@@ -1,14 +1,14 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { SCHEDULED_LANGUAGES, type LanguageOption } from "./languages";
-import { TRANSLATIONS, getTranslation } from "./translations";
+import { SCHEDULED_LANGUAGES, type LanguageOption, type SupportedLanguageCode } from "./languages";
+import { getTranslation, type TranslationKey } from "./translations";
 
 interface LanguageContextType {
-    language: string;
+    language: SupportedLanguageCode;
     setLanguage: (code: string) => void;
     currentLanguageInfo: LanguageOption;
-    t: (key: string, fallbackText: string) => string;
+    t: (key: TranslationKey, fallbackText: string) => string;
 }
 
 const defaultLangInfo: LanguageOption = SCHEDULED_LANGUAGES[0] || {
@@ -25,11 +25,11 @@ const LanguageContext = createContext<LanguageContextType>({
 });
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [language, setLanguageState] = useState<string>("en");
+    const [language, setLanguageState] = useState<SupportedLanguageCode>("en");
 
-    const applyDocumentDirection = (code: string) => {
+    const applyDocumentDirection = (code: SupportedLanguageCode) => {
         if (typeof document === "undefined") return;
-        const isRtl = code === "ur" || code === "ks" || code === "sd";
+        const isRtl = code === "ur";
         document.documentElement.dir = isRtl ? "rtl" : "ltr";
         document.documentElement.setAttribute("lang", code);
     };
@@ -37,9 +37,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     useEffect(() => {
         try {
             const saved = localStorage.getItem("nirikshak_lang");
-            if (saved && SCHEDULED_LANGUAGES.some((l) => l.code === saved)) {
-                setLanguageState(saved);
-                applyDocumentDirection(saved);
+            const savedLanguage = SCHEDULED_LANGUAGES.find((option) => option.code === saved);
+            if (savedLanguage) {
+                setLanguageState(savedLanguage.code);
+                applyDocumentDirection(savedLanguage.code);
             } else {
                 applyDocumentDirection("en");
             }
@@ -49,10 +50,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, []);
 
     const setLanguage = (code: string) => {
-        setLanguageState(code);
-        applyDocumentDirection(code);
+        const selectedLanguage = SCHEDULED_LANGUAGES.find((option) => option.code === code);
+        if (!selectedLanguage) return;
+
+        setLanguageState(selectedLanguage.code);
+        applyDocumentDirection(selectedLanguage.code);
         try {
-            localStorage.setItem("nirikshak_lang", code);
+            localStorage.setItem("nirikshak_lang", selectedLanguage.code);
         } catch {
             // Ignore
         }
@@ -61,7 +65,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const currentLanguageInfo =
         SCHEDULED_LANGUAGES.find((l) => l.code === language) || defaultLangInfo;
 
-    const t = (key: string, fallbackText: string): string => {
+    const t = (key: TranslationKey, fallbackText: string): string => {
         return getTranslation(language, key, fallbackText);
     };
 

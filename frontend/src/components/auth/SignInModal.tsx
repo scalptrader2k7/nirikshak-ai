@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/i18n/LanguageContext";
+import type { TranslationKey } from "@/i18n/translations";
 import {
     Shield,
     User,
@@ -21,11 +23,13 @@ export type UserRole = "officer" | "citizen" | "admin";
 interface RoleDetails {
     label: string;
     shortLabel: string;
+    shortLabelKey: TranslationKey;
     description: string;
     idLabel: string;
     placeholder: string;
     format: string;
     buttonText: string;
+    buttonTextKey: TranslationKey;
     defaultId: string;
     icon: React.ComponentType<{ size?: number | string; className?: string }>;
 }
@@ -34,33 +38,39 @@ const ROLE_CONFIG: Record<UserRole, RoleDetails> = {
     officer: {
         label: "Audit Officer",
         shortLabel: "Officer",
+        shortLabelKey: "signin.officer",
         description: "Investigate flagged public works, review empirical evidence, and log verification decisions.",
         idLabel: "Official Officer ID",
         placeholder: "OFF-10234",
         format: "Format: OFF-XXXXX (e.g. OFF-10234)",
         buttonText: "Sign in as Audit Officer",
+        buttonTextKey: "signin.sign_in_as_officer",
         defaultId: "OFF-10234",
         icon: Shield,
     },
     citizen: {
         label: "Citizen",
         shortLabel: "Citizen",
+        shortLabelKey: "signin.citizen",
         description: "View public project transparency summaries, verified records, and community audit data.",
         idLabel: "Citizen ID / Email",
         placeholder: "demo.citizen@example.in",
         format: "Use registered citizen email or ID",
         buttonText: "Continue as Citizen",
+        buttonTextKey: "signin.continue_as_citizen",
         defaultId: "demo.citizen@example.in",
         icon: User,
     },
     admin: {
         label: "Administrator",
         shortLabel: "Admin",
+        shortLabelKey: "signin.administrator",
         description: "Manage oversight operations, investigator assignments, and system integrity controls.",
         idLabel: "Administrator ID",
         placeholder: "ADM-00001",
         format: "Format: ADM-XXXXX (e.g. ADM-00001)",
         buttonText: "Sign in as Administrator",
+        buttonTextKey: "signin.sign_in_as_admin",
         defaultId: "ADM-00001",
         icon: Lock,
     },
@@ -77,6 +87,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
     onClose,
     initialRole = "officer",
 }) => {
+    const { t } = useLanguage();
     const router = useRouter();
     const modalRef = useRef<HTMLDivElement>(null);
     const identifierInputRef = useRef<HTMLInputElement>(null);
@@ -149,14 +160,24 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         e.preventDefault();
 
         if (!identifier.trim() || !password.trim()) {
-            setNotice("Please enter your credentials before continuing.");
+            setNotice(
+                t(
+                    "signin.enter_credentials",
+                    "Please enter your credentials before continuing."
+                )
+            );
             setIsError(true);
             return;
         }
 
         setIsSubmitting(true);
         setIsError(false);
-        setNotice("Demonstration access verified. Entering NIRIKSHAK AI Workspace...");
+        setNotice(
+            t(
+                "signin.access_verified",
+                "Demonstration access verified. Entering NIRIKSHAK AI Workspace..."
+            )
+        );
 
         setTimeout(() => {
             router.push("/dashboard");
@@ -216,7 +237,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                             onClick={onClose}
                             disabled={isSubmitting}
                             className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 hover:text-white transition focus-visible:outline-2 focus-visible:outline-white disabled:opacity-50 cursor-pointer"
-                            aria-label="Close sign-in modal"
+                            aria-label={t("common.close", "Close")}
                         >
                             <X size={20} />
                         </button>
@@ -230,10 +251,13 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                     {/* Header instruction */}
                     <div className="text-center mb-5">
                         <h3 className="text-xl font-bold tracking-tight text-[#172033]">
-                            Sign in to Investigation Workspace
+                            {t("signin.title", "Sign in to Investigation Workspace")}
                         </h3>
                         <p className="text-sm text-[#617083] mt-1">
-                            Select your operational role to access monitored works.
+                            {t(
+                                "signin.subtitle",
+                                "Select your operational role to access monitored works."
+                            )}
                         </p>
                     </div>
 
@@ -254,7 +278,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                                         }`}
                                 >
                                     <Icon size={16} className={isSelected ? "text-[#174a7e]" : "text-[#8a96a4]"} />
-                                    <span>{config.shortLabel}</span>
+                                    <span>{t(config.shortLabelKey, config.shortLabel)}</span>
                                 </button>
                             );
                         })}
@@ -312,7 +336,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                                     htmlFor="modal-password"
                                     className="block text-sm font-bold text-[#2d3b4b]"
                                 >
-                                    Password
+                                    {t("signin.password", "Password")}
                                 </label>
                                 <button
                                     type="button"
@@ -345,7 +369,12 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword((prev) => !prev)}
-                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                    aria-label={t(
+                                        showPassword
+                                            ? "signin.hide_password"
+                                            : "signin.show_password",
+                                        showPassword ? "Hide password" : "Show password"
+                                    )}
                                     className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-[#8290a0] hover:text-[#174a7e] transition cursor-pointer"
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -363,7 +392,10 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                                     className="h-4 w-4 rounded border-[#c8ced6] text-[#174a7e] accent-[#174a7e]"
                                 />
                                 <span className="text-xs text-[#536071] font-medium">
-                                    Remember session on this workstation
+                                    {t(
+                                        "signin.remember_session",
+                                        "Remember session on this workstation"
+                                    )}
                                 </span>
                             </label>
                         </div>
@@ -374,7 +406,11 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                             disabled={isSubmitting}
                             className="group flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#102d49] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#173d61] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#102d49] active:translate-y-px disabled:opacity-75 mt-3 cursor-pointer"
                         >
-                            <span>{isSubmitting ? "Verifying..." : currentRole.buttonText}</span>
+                            <span>
+                                {isSubmitting
+                                    ? t("signin.verifying", "Verifying...")
+                                    : t(currentRole.buttonTextKey, currentRole.buttonText)}
+                            </span>
                             <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
                         </button>
 

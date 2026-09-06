@@ -12,12 +12,13 @@ import {
     LogIn,
 } from "@/components/shared/Icons";
 import apiClient from "@/api/client";
-import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+import { useLanguage } from "@/i18n/LanguageContext";
+import type { TranslationKey } from "@/i18n/translations";
 import { LanguageSelector } from "@/components/layout/LanguageSelector";
 
 interface NavItem {
     name: string;
-    translationKey: string;
+    translationKey: TranslationKey;
     href: string;
     icon: React.ComponentType<{ size?: number | string; className?: string }>;
 }
@@ -85,7 +86,7 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
                                     NIRIKSHAK AI
                                 </Link>
                                 <span className="rounded border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#e2c878]">
-                                    Investigation Workspace
+                                    {t("workspace.investigation_workspace", "Investigation Workspace")}
                                 </span>
                             </div>
                             <p className="mt-0.5 text-xs font-medium text-white/75 sm:text-[13px]">
@@ -114,7 +115,7 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
                         <Link
                             href="/signin"
                             className="rounded-md border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/10 hover:border-white/40 transition cursor-pointer flex items-center gap-1.5"
-                            title="Sign Out of Investigation Workspace"
+                            title={t("nav.sign_out", "Sign Out")}
                         >
                             <LogIn size={13} className="rotate-180" />
                             <span className="hidden sm:inline">{t("nav.sign_out", "Sign Out")}</span>
@@ -182,9 +183,13 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
                     </div>
 
                     <div className="flex items-center gap-4 text-[11px] font-mono">
-                        <span>Database Status: {dbStatus === "connected" ? "Connected (742 Records)" : "Live Dataset"}</span>
+                        <span>
+                            {t("workspace.database_status", "Database Status")}: {dbStatus === "connected"
+                                ? t("workspace.connected", "Connected")
+                                : t("workspace.live_dataset", "Live Dataset")}
+                        </span>
                         <span>·</span>
-                        <span>Version 2.4.0</span>
+                        <span>{t("workspace.version", "Version")} 2.4.0</span>
                     </div>
                 </div>
             </footer>
@@ -193,11 +198,7 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
 }
 
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    return (
-        <LanguageProvider>
-            <AppShellContent>{children}</AppShellContent>
-        </LanguageProvider>
-    );
+    return <AppShellContent>{children}</AppShellContent>;
 };
 
 export default AppShell;

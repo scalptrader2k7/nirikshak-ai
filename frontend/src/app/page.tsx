@@ -12,6 +12,7 @@ import {
     Info,
 } from "@/components/shared/Icons";
 import { SignInModal } from "@/components/auth/SignInModal";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const HERO_IMAGE = "/parliament-hero.jpg";
 
@@ -40,6 +41,7 @@ const capabilities = [
 ];
 
 export default function LandingPage() {
+    const { t } = useLanguage();
     const [isSignInOpen, setIsSignInOpen] = useState(false);
 
     // Deep-link support: auto-open modal if URL has ?signin=true or #signin
@@ -121,7 +123,7 @@ export default function LandingPage() {
                             onClick={openSignIn}
                             className="rounded-md bg-[#d8b45c] px-4 py-2 text-xs font-bold text-[#102d49] transition hover:bg-[#e6ca7c] shadow-sm cursor-pointer"
                         >
-                            Sign In
+                            {t("landing.sign_in", "Sign In")}
                         </button>
                     </div>
                 </div>
@@ -138,19 +140,24 @@ export default function LandingPage() {
                             <div className="mb-6 flex items-center gap-3">
                                 <span className="h-px w-10 bg-[#d8b45c]" aria-hidden="true" />
                                 <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#e2c878]">
-                                    MPLADS • Public Expenditure Oversight
+                                    {t("landing.hero_eyebrow", "MPLADS • Public Expenditure Oversight")}
                                 </span>
                             </div>
 
                             {/* Headline slightly refined for ideal visual balance */}
                             <h1 id="hero-heading" className="max-w-[680px] font-serif text-3xl font-medium leading-[1.10] tracking-[-0.025em] text-white sm:text-4xl lg:text-[54px]">
-                                Intelligent Oversight for
+                                {t("landing.hero_title_line_1", "Intelligent Oversight for")}
                                 <br />
-                                <span className="text-[#d9bd67]">Public Development Works.</span>
+                                <span className="text-[#d9bd67]">
+                                    {t("landing.hero_title_line_2", "Public Development Works.")}
+                                </span>
                             </h1>
 
                             <p className="mt-5 text-xs sm:text-[13px] font-semibold uppercase tracking-[0.16em] text-[#e2c878]/90">
-                                Detect anomalies. Verify evidence. Strengthen accountability.
+                                {t(
+                                    "landing.hero_tagline",
+                                    "Detect anomalies. Verify evidence. Strengthen accountability."
+                                )}
                             </p>
 
                             <p className="mt-4 max-w-[550px] text-sm leading-relaxed text-white/75 sm:text-[15px]">
@@ -164,14 +171,14 @@ export default function LandingPage() {
                                     onClick={openSignIn}
                                     className="w-full sm:w-auto rounded-md bg-[#d8b45c] px-6 py-3.5 text-sm font-semibold text-[#102d49] shadow-sm transition hover:bg-[#e6ca7c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d8b45c] cursor-pointer"
                                 >
-                                    Sign in to NIRIKSHAK
+                                    {t("landing.sign_in", "Sign In")}
                                 </button>
 
                                 <a
                                     href="#about"
                                     className="w-full sm:w-auto rounded-md border border-white/40 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-xs transition hover:border-white hover:bg-white/10 text-center"
                                 >
-                                    Learn More
+                                    {t("landing.learn_more", "Learn More")}
                                 </a>
                             </div>
 
@@ -179,15 +186,15 @@ export default function LandingPage() {
                             <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/15 pt-6 text-[11px] font-medium uppercase tracking-[0.18em] text-white/55">
                                 <span className="flex items-center gap-2">
                                     <Check size={13} className="text-[#d8b45c]" />
-                                    Evidence-Led
+                                    {t("landing.evidence_led", "Evidence-Led")}
                                 </span>
                                 <span className="flex items-center gap-2">
                                     <Check size={13} className="text-[#d8b45c]" />
-                                    Human-in-the-Loop
+                                    {t("landing.human_in_loop", "Human-in-the-Loop")}
                                 </span>
                                 <span className="flex items-center gap-2">
                                     <Check size={13} className="text-[#d8b45c]" />
-                                    Audit-Focused
+                                    {t("landing.audit_focused", "Audit-Focused")}
                                 </span>
                             </div>
                         </div>
@@ -238,7 +245,7 @@ export default function LandingPage() {
                                 <Shield size={18} />
                             </div>
                             <h3 className="mt-3 text-sm font-bold text-[#17263a]">
-                                Detection, not accusation
+                                {t("landing.detection_title", "Detection, not accusation")}
                             </h3>
                             <p className="mt-1.5 text-xs leading-relaxed text-[#687487]">
                                 An anomaly score is an objective indicator for human examination—never an automatic finding of wrongdoing or fraud.
@@ -250,7 +257,7 @@ export default function LandingPage() {
                                 <Database size={18} />
                             </div>
                             <h3 className="mt-3 text-sm font-bold text-[#17263a]">
-                                Evidence before action
+                                {t("landing.evidence_title", "Evidence before action")}
                             </h3>
                             <p className="mt-1.5 text-xs leading-relaxed text-[#687487]">
                                 Investigators review baseline peer benchmarks, duplicate clusters, and records before determining audit actions.
@@ -276,7 +283,7 @@ export default function LandingPage() {
                             </p>
 
                             <h2 id="capabilities-heading" className="mt-3 font-serif text-3xl tracking-[-0.025em] text-[#17263a] sm:text-4xl lg:text-5xl">
-                                From signal to investigation.
+                                {t("landing.core_heading", "From signal to investigation.")}
                             </h2>
                         </div>
 
@@ -398,7 +405,7 @@ export default function LandingPage() {
                                     onClick={openSignIn}
                                     className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#d8b45c] px-6 text-sm font-bold text-[#102d49] transition hover:bg-[#e6ca7c] shadow-md cursor-pointer"
                                 >
-                                    <span>Enter NIRIKSHAK Workspace</span>
+                                    <span>{t("landing.enter_workspace", "Enter NIRIKSHAK Workspace")}</span>
                                     <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                                 </button>
                                 <p className="text-center text-[10px] text-white/50">

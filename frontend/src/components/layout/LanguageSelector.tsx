@@ -34,7 +34,7 @@ export const LanguageSelector: React.FC = () => {
     });
 
     return (
-        <div className="relative inline-block text-left" ref={dropdownRef}>
+        <div className="relative inline-block text-left rtl:text-right" ref={dropdownRef}>
             {/* Compact Language Selector Button */}
             <button
                 type="button"
@@ -42,7 +42,7 @@ export const LanguageSelector: React.FC = () => {
                 className="flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-white/15 hover:border-white/40 transition cursor-pointer"
                 aria-expanded={isOpen}
                 aria-haspopup="true"
-                title="Select Language / भाषा चुनें"
+                title={t("common.select_language", "Select language")}
             >
                 <Globe size={14} className="text-[#d8b45c]" />
                 <span className="max-w-[85px] truncate text-[11px] font-bold">
@@ -53,7 +53,7 @@ export const LanguageSelector: React.FC = () => {
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute right-0 z-50 mt-2 w-64 rounded-lg border border-[#dfe3e8] bg-white p-2.5 shadow-xl text-[#172033] animate-in fade-in slide-in-from-top-1 duration-150">
+                <div className="absolute right-0 z-50 mt-2 w-64 rounded-lg border border-[#dfe3e8] bg-white p-2.5 shadow-xl text-[#172033] animate-in fade-in slide-in-from-top-1 duration-150 rtl:right-auto rtl:left-0">
                     {/* Search Field */}
                     <div className="relative mb-2">
                         <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#536174]" />
@@ -78,7 +78,9 @@ export const LanguageSelector: React.FC = () => {
 
                     {/* Language Header / Count */}
                     <div className="flex items-center justify-between px-2 py-1 mb-1 border-b border-[#dfe3e8] text-[10px] font-bold uppercase tracking-wider text-[#536174]">
-                        <span>22 Scheduled Languages</span>
+                        <span>
+                            {filteredLanguages.length} {t("common.scheduled_languages", "Supported Languages")}
+                        </span>
                         <span className="font-mono text-[#174a7e]">{filteredLanguages.length}</span>
                     </div>
 
@@ -86,7 +88,7 @@ export const LanguageSelector: React.FC = () => {
                     <div className="max-h-60 overflow-y-auto space-y-0.5 scrollbar-thin">
                         {filteredLanguages.length === 0 ? (
                             <p className="py-4 text-center text-xs text-[#536174]">
-                                No languages found
+                                {t("common.no_languages_found", "No languages found")}
                             </p>
                         ) : (
                             filteredLanguages.map((lang) => {
