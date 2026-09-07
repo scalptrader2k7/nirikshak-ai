@@ -3,260 +3,201 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  Menu, 
-  X, 
-  LayoutDashboard, 
-  ShieldAlert, 
-  FolderSearch, 
-  BarChart3, 
-  FileText, 
-  HelpCircle,
-  Database,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight
-} from "lucide-react";
+import {
+    LayoutDashboard,
+    ShieldAlert,
+    FolderSearch,
+    FileText,
+    ClipboardCheck,
+    LogIn,
+} from "@/components/shared/Icons";
 import apiClient from "@/api/client";
+import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+import { LanguageSelector } from "@/components/layout/LanguageSelector";
 
-interface SidebarItem {
-  name: string;
-  href: string;
-  icon: React.ComponentType<any>;
+interface NavItem {
+    name: string;
+    translationKey: string;
+    href: string;
+    icon: React.ComponentType<{ size?: number | string; className?: string }>;
 }
 
-const PRIMARY_NAV: SidebarItem[] = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Investigations", href: "/investigations", icon: ShieldAlert },
-  { name: "Projects", href: "/projects", icon: FolderSearch },
-  { name: "Analytics", href: "/analytics", icon: BarChart3 }
+const NAV_ITEMS: NavItem[] = [
+    { name: "Dashboard", translationKey: "nav.dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Projects", translationKey: "nav.projects", href: "/projects", icon: FolderSearch },
+    { name: "Review Queue", translationKey: "nav.review_queue", href: "/review", icon: ShieldAlert },
+    { name: "Evidence & Investigation", translationKey: "nav.evidence", href: "/evidence", icon: FileText },
+    { name: "Reports & Data", translationKey: "nav.reports", href: "/reports", icon: ClipboardCheck },
 ];
 
-const SECONDARY_NAV: SidebarItem[] = [
-  { name: "Evidence Explorer", href: "/evidence", icon: FileText },
-  { name: "Methodology & About", href: "/about", icon: HelpCircle }
-];
+function AppShellContent({ children }: { children: React.ReactNode }) {
+    const pathname = usePathname();
+    const { t } = useLanguage();
+    const [dbStatus, setDbStatus] = useState<"loading" | "connected" | "disconnected">("loading");
+
+    useEffect(() => {
+        apiClient
+            .getHealth()
+            .then((res) => {
+                setDbStatus(res.status === "ok" && res.data_loaded ? "connected" : "disconnected");
+            })
+            .catch(() => setDbStatus("disconnected"));
+    }, []);
+
+    return (
+        <div className="min-h-screen bg-[#f4f2ec] text-[#17263a] flex flex-col font-sans selection:bg-[#d8b45c]/25 selection:text-[#102d49]">
+            {/* ─────────────────────────────────────────────────────────────
+          1. TOP INSTITUTIONAL HEADER (Exact match with Landing Page)
+      ───────────────────────────────────────────────────────────── */}
+            <header className="sticky top-0 z-30 border-b border-white/15 bg-[#102d49] text-white shadow-sm">
+                <div className="mx-auto flex min-h-[76px] max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-14">
+                    {/* Brand & Emblem */}
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/dashboard"
+                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d8b45c]/40 bg-[#d8b45c]/10 text-[#d8b45c] shadow-xs hover:border-[#d8b45c] transition"
+                            aria-label="NIRIKSHAK Institutional Insignia"
+                        >
+                            <svg
+                                viewBox="0 0 48 48"
+                                className="h-6 w-6"
+                                fill="none"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M12 18h24M15 18v17M21 18v17M27 18v17M33 18v17M10 35h28M9 39h30"
+                                    stroke="currentColor"
+                                    strokeWidth="2.3"
+                                    strokeLinecap="round"
+                                />
+                                <path
+                                    d="M10 17c4-7 9-10 14-10s10 3 14 10"
+                                    stroke="currentColor"
+                                    strokeWidth="2.3"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        </Link>
+
+                        <div className="leading-tight">
+                            <div className="flex items-center gap-2.5">
+                                <Link href="/dashboard" className="text-lg font-extrabold tracking-wider text-white sm:text-xl hover:text-white/90 transition">
+                                    NIRIKSHAK AI
+                                </Link>
+                                <span className="rounded border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#e2c878]">
+                                    Investigation Workspace
+                                </span>
+                            </div>
+                            <p className="mt-0.5 text-xs font-medium text-white/75 sm:text-[13px]">
+                                Ministry of Statistics &amp; Programme Implementation · MPLADS Division
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Right side controls: Language Selector + Officer Badge + Sign Out */}
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                        {/* Language Selector Dropdown */}
+                        <LanguageSelector />
+
+                        {/* Officer Profile Badge */}
+                        <div className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#d8b45c]/20 border border-[#d8b45c]/40 text-[#d8b45c] font-bold text-[11px]">
+                                OFF
+                            </div>
+                            <div className="hidden sm:block text-left leading-none">
+                                <p className="font-bold text-white text-xs">{t("nav.audit_officer", "Audit Officer")}</p>
+                                <p className="text-[10px] text-white/60 font-mono mt-0.5">OFF-10234</p>
+                            </div>
+                        </div>
+
+                        {/* Sign Out Button */}
+                        <Link
+                            href="/signin"
+                            className="rounded-md border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/10 hover:border-white/40 transition cursor-pointer flex items-center gap-1.5"
+                            title="Sign Out of Investigation Workspace"
+                        >
+                            <LogIn size={13} className="rotate-180" />
+                            <span className="hidden sm:inline">{t("nav.sign_out", "Sign Out")}</span>
+                        </Link>
+                    </div>
+                </div>
+            </header>
+
+            {/* ─────────────────────────────────────────────────────────────
+          2. TOP HORIZONTAL NAVIGATION BAR (Below Header)
+      ───────────────────────────────────────────────────────────── */}
+            <nav className="sticky top-[76px] z-20 border-b border-[#d8d4ca] bg-[#ebe8df] shadow-xs">
+                <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-14 overflow-x-auto scrollbar-none py-1.5">
+                    <div className="flex items-center gap-1.5">
+                        {NAV_ITEMS.map((item) => {
+                            const isActive =
+                                item.href === "/projects"
+                                    ? pathname === "/projects"
+                                    : item.name === "Evidence & Investigation"
+                                    ? pathname === "/evidence" || pathname.startsWith("/evidence") || pathname.startsWith("/projects/")
+                                    : item.name === "Reports & Data"
+                                    ? pathname === "/reports" || pathname.startsWith("/reports") || pathname === "/upload" || pathname.startsWith("/upload")
+                                    : pathname === item.href ||
+                                      (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                            const IconComponent = item.icon;
+
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                                        isActive
+                                            ? "bg-[#102d49] text-white shadow-xs"
+                                            : "text-[#536174] hover:text-[#102d49] hover:bg-white/60"
+                                    }`}
+                                >
+                                    <IconComponent
+                                        size={14}
+                                        className={isActive ? "text-[#d8b45c]" : "text-[#687487]"}
+                                    />
+                                    <span>{t(item.translationKey, item.name)}</span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </div>
+            </nav>
+
+            {/* ─────────────────────────────────────────────────────────────
+          3. MAIN CONTENT BODY
+      ───────────────────────────────────────────────────────────── */}
+            <main className="flex-1 mx-auto w-full max-w-[1440px] px-6 sm:px-10 lg:px-14 py-8">
+                {children}
+            </main>
+
+            {/* ─────────────────────────────────────────────────────────────
+          4. INSTITUTIONAL FOOTER
+      ───────────────────────────────────────────────────────────── */}
+            <footer className="border-t border-[#d8d4ca] bg-[#ebe8df] text-[#536174] text-xs py-6">
+                <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-14 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-2 text-[11px]">
+                        <span className="font-bold text-[#102d49]">NIRIKSHAK AI</span>
+                        <span>·</span>
+                        <span>Ministry of Statistics &amp; Programme Implementation</span>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-[11px] font-mono">
+                        <span>Database Status: {dbStatus === "connected" ? "Connected (742 Records)" : "Live Dataset"}</span>
+                        <span>·</span>
+                        <span>Version 2.4.0</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    );
+}
 
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [dbStatus, setDbStatus] = useState<"loading" | "connected" | "disconnected">("loading");
-
-  useEffect(() => {
-    // Fetch backend health to show status indicator
-    apiClient.getHealth()
-      .then(res => {
-        if (res.status === "ok" && res.data_loaded) {
-          setDbStatus("connected");
-        } else {
-          setDbStatus("disconnected");
-        }
-      })
-      .catch(() => {
-        setDbStatus("disconnected");
-      });
-  }, []);
-
-  const getPageTitle = (path: string) => {
-    const allNavs = [...PRIMARY_NAV, ...SECONDARY_NAV];
-    const match = allNavs.find(item => item.href === path);
-    if (match) return match.name;
-    if (path.startsWith("/investigations/")) return "Case Investigation Profile";
-    if (path.startsWith("/projects/")) return "Project Profile Explorer";
-    return "Intelligence Platform";
-  };
-
-  const getBreadcrumbs = (path: string) => {
-    const title = getPageTitle(path);
-    if (path === "/") {
-      return [{ name: "Nirikshak", href: "/" }, { name: "Dashboard", href: "/" }];
-    }
-    return [
-      { name: "Nirikshak", href: "/" },
-      { name: title, href: path }
-    ];
-  };
-
-  return (
-    <div className="flex h-screen bg-[#F8FAFC] text-[#0F172A] font-sans overflow-hidden">
-      
-      {/* 1. Mobile Sidebar Overlay */}
-      {mobileOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      {/* 2. Responsive Sidebar Panel */}
-      <aside 
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col h-full bg-[#0B1321] text-[#E2E8F0] border-r border-[#1E293B] transition-all duration-300
-          ${sidebarOpen ? "w-64" : "w-20"} 
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          lg:static lg:flex`}
-      >
-        {/* Logo and Brand Title Header */}
-        <div className="flex h-16 items-center justify-between px-6 border-b border-[#1E293B] bg-[#0F172A]">
-          <Link href="/" className="flex items-center gap-2 overflow-hidden">
-            <div className="flex items-center justify-center h-8 w-8 rounded bg-[#2563EB] text-white font-bold shrink-0">
-              N
-            </div>
-            {sidebarOpen && (
-              <span className="font-semibold text-sm tracking-widest text-[#FFFFFF] whitespace-nowrap">
-                NIRIKSHAK AI
-              </span>
-            )}
-          </Link>
-          <button 
-            onClick={() => setMobileOpen(false)}
-            className="lg:hidden text-[#64748B] hover:text-[#E2E8F0]"
-            aria-label="Close menu"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Navigation items list */}
-        <nav className="flex-1 space-y-1.5 px-4 py-6 overflow-y-auto">
-          {sidebarOpen && (
-            <div className="px-3 mb-2 text-xs font-semibold text-[#64748B] uppercase tracking-wider">
-              Primary Directory
-            </div>
-          )}
-          {PRIMARY_NAV.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group
-                  ${isActive 
-                    ? "bg-[#2563EB] text-[#FFFFFF]" 
-                    : "text-[#64748B] hover:text-[#E2E8F0] hover:bg-[#1E293B]/50"}`}
-              >
-                <Icon className={`h-5 w-5 shrink-0 ${isActive ? "text-[#FFFFFF]" : "text-[#64748B] group-hover:text-[#E2E8F0]"}`} />
-                {sidebarOpen && <span className="truncate">{item.name}</span>}
-              </Link>
-            );
-          })}
-
-          <div className="h-px bg-[#1E293B] my-6" />
-
-          {sidebarOpen && (
-            <div className="px-3 mb-2 text-xs font-semibold text-[#64748B] uppercase tracking-wider">
-              Secondary Directory
-            </div>
-          )}
-          {SECONDARY_NAV.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group
-                  ${isActive 
-                    ? "bg-[#2563EB] text-[#FFFFFF]" 
-                    : "text-[#64748B] hover:text-[#E2E8F0] hover:bg-[#1E293B]/50"}`}
-              >
-                <Icon className={`h-5 w-5 shrink-0 ${isActive ? "text-[#FFFFFF]" : "text-[#64748B] group-hover:text-[#E2E8F0]"}`} />
-                {sidebarOpen && <span className="truncate">{item.name}</span>}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Collapsible toggle buttons */}
-        <div className="hidden lg:flex p-4 border-t border-[#1E293B] bg-[#0F172A]/30">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="flex items-center justify-center w-full py-2 border border-[#1E293B] rounded-lg text-xs font-medium text-[#64748B] hover:text-[#E2E8F0] hover:bg-[#1E293B] transition"
-            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
-          >
-            {sidebarOpen ? (
-              <span className="flex items-center gap-1.5"><ChevronLeft className="h-4 w-4" /> Collapse</span>
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </button>
-        </div>
-      </aside>
-
-      {/* 3. Main Dashboard Wrapper */}
-      <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        
-        {/* Header Bar */}
-        <header className="flex h-16 items-center justify-between border-b border-[#E2E8F0] bg-[#FFFFFF] px-6 shrink-0">
-          
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden text-[#64748B] hover:text-[#0F172A]"
-              aria-label="Open navigation menu"
-            >
-              <Menu className="h-6 w-6" />
-            </button>
-
-            {/* Breadcrumbs */}
-            <nav className="hidden sm:flex" aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-2 text-sm text-[#64748B]">
-                {getBreadcrumbs(pathname).map((crumb, idx) => (
-                  <li key={crumb.name} className="flex items-center gap-2">
-                    {idx > 0 && <span className="text-[#E2E8F0] font-light">/</span>}
-                    <Link 
-                      href={crumb.href} 
-                      className={`hover:text-[#0F172A] ${idx === getBreadcrumbs(pathname).length - 1 ? "font-semibold text-[#0F172A]" : ""}`}
-                    >
-                      {crumb.name}
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-4">
-            
-            {/* Database status indicator badge */}
-            <div className="flex items-center gap-2 px-3 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-full text-xs font-medium">
-              <Database className="h-3.5 w-3.5 text-[#64748B]" />
-              <span className="text-[#64748B] hidden md:inline">Core DB Status:</span>
-              <span className="flex items-center gap-1.5">
-                <span className={`h-2.5 w-2.5 rounded-full ${
-                  dbStatus === "connected" ? "bg-[#0D9488]" : dbStatus === "loading" ? "bg-amber-500 animate-pulse" : "bg-red-600"
-                }`} />
-                <span className="capitalize text-slate-800 font-semibold text-[0.85em]">
-                  {dbStatus === "loading" ? "Validating..." : dbStatus === "connected" ? "Online" : "Offline"}
-                </span>
-              </span>
-            </div>
-            
-            {/* Search Placeholder */}
-            <div className="relative hidden lg:block">
-              <input
-                type="search"
-                placeholder="Search database (Record ID, MP, Work)..."
-                disabled
-                className="w-72 px-4 py-1.5 border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] rounded-md text-xs placeholder-[#64748B] opacity-60 cursor-not-allowed"
-              />
-            </div>
-          </div>
-        </header>
-
-        {/* Content body pane */}
-        <main className="flex-1 overflow-y-auto p-8 relative">
-          {children}
-        </main>
-
-        {/* Persistent Audit/Methodology Disclaimer Banner */}
-        <footer className="h-10 bg-[#1E293B] text-[#E2E8F0] border-t border-[#E2E8F0] flex items-center justify-center text-[0.78em] font-medium tracking-wide shrink-0 px-6 select-none text-center">
-          <span>Risk indicators identify records that may warrant further review. They do not establish wrongdoing or corruption.</span>
-        </footer>
-
-      </div>
-    </div>
-  );
+    return (
+        <LanguageProvider>
+            <AppShellContent>{children}</AppShellContent>
+        </LanguageProvider>
+    );
 };
+
 export default AppShell;
