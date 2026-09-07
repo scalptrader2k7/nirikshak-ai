@@ -1,5 +1,6 @@
 import os
 import json
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -401,8 +402,11 @@ def generate_feature_manifest(df, original_cols, manifest_path):
     print(f"Wrote feature manifest metadata to {manifest_path}")
 
 if __name__ == "__main__":
-    input_file = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\processed\mplads_clean.csv"
-    output_file = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\processed\mplads_features.csv"
-    manifest_file = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\reports\feature_manifest.json"
+    REPO_ROOT = Path(__file__).resolve().parents[2]
+    DATA_DIR = REPO_ROOT / "data"
+
+    input_file = DATA_DIR / "processed" / "mplads_clean.csv"
+    output_file = DATA_DIR / "processed" / "mplads_features.csv"
+    manifest_file = DATA_DIR / "reports" / "feature_manifest.json"
     
     run_feature_engineering_pipeline(input_file, output_file, manifest_file)

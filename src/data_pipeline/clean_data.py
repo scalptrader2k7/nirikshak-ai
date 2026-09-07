@@ -1,5 +1,6 @@
 import os
 import hashlib
+from pathlib import Path
 import pandas as pd
 import numpy as np
 
@@ -193,15 +194,11 @@ def run_cleaning_pipeline(raw_file_path, processed_file_path, report_file_path):
     print(f"Wrote quality report to {report_file_path}")
 
 if __name__ == "__main__":
-    raw_dir = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\raw"
-    csv_files = [f for f in os.listdir(raw_dir) if f.endswith(".csv")]
-    
-    if not csv_files:
-        print("No CSV files found in raw directory.")
-        exit(1)
-        
-    raw_path = os.path.join(raw_dir, csv_files[0])
-    processed_path = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\processed\mplads_clean.csv"
-    report_path = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\reports\data_quality_report.md"
+    REPO_ROOT = Path(__file__).resolve().parents[2]
+    DATA_DIR = REPO_ROOT / "data"
+
+    raw_path = DATA_DIR / "raw" / "mplads_raw.csv"
+    processed_path = DATA_DIR / "processed" / "mplads_clean.csv"
+    report_path = DATA_DIR / "reports" / "data_quality_report.md"
     
     run_cleaning_pipeline(raw_path, processed_path, report_path)

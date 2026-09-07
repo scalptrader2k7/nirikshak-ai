@@ -1,5 +1,6 @@
 import os
 import json
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -144,10 +145,13 @@ def run_detection_pipeline(features_path, anomaly_csv_path, anomaly_json_path, d
     print("=====================================\n")
 
 if __name__ == "__main__":
-    feat_path = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\processed\mplads_features.csv"
-    anom_csv = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\processed\anomaly_results.csv"
-    anom_json = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\reports\anomaly_results.json"
-    dup_pairs = r"c:\Users\G.VEDAVYAS\Documents\nirikshak\data\processed\duplicate_pairs.csv"
+    REPO_ROOT = Path(__file__).resolve().parents[2]
+    DATA_DIR = REPO_ROOT / "data"
+
+    feat_path = DATA_DIR / "processed" / "mplads_features.csv"
+    anom_csv = DATA_DIR / "processed" / "anomaly_results.csv"
+    anom_json = DATA_DIR / "reports" / "anomaly_results.json"
+    dup_pairs = DATA_DIR / "processed" / "duplicate_pairs.csv"
     
     run_feature_engineering_pipeline = False # handled separately
     run_detection_pipeline(feat_path, anom_csv, anom_json, dup_pairs)
