@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, ShieldAlert } from "@/components/shared/Icons";
 import apiClient from "@/api/client";
-import { getEnrichedCaseDetail, type EnrichedCaseDetail } from "@/components/case/demoCaseDetailAdapter";
+import { getEnrichedCaseDetail, getEnrichedLiveCaseDetail, type EnrichedCaseDetail } from "@/components/case/demoCaseDetailAdapter";
 import { CaseHeader } from "@/components/case/CaseHeader";
 import { CaseTabs, type CaseTabKey } from "@/components/case/CaseTabs";
 import { CaseOverviewTab } from "@/components/case/CaseOverviewTab";
@@ -32,24 +32,15 @@ export default function ProjectCaseFilePage() {
 
         setLoading(true);
 
-        // Attempt to fetch from API, fallback to enriched demo detail adapter
+        // Attempt to fetch the complete live detail; fall back to demo only if the API is unavailable.
         apiClient
-            .getCase(recordId)
-            .then((res) => {
-                if (res && res.data) {
-                    const enriched = getEnrichedCaseDetail(recordId);
-                    if (enriched) {
-                        enriched.case = res.data;
-                        setCaseData(enriched);
-                    } else {
-                        setCaseData(getEnrichedCaseDetail(recordId));
-                    }
-                } else {
-                    setCaseData(getEnrichedCaseDetail(recordId));
-                }
+            .getCaseDetail(recordId)
+            .then((detail) => {
+                setCaseData(getEnrichedLiveCaseDetail(detail));
             })
-            .catch(() => {
-                setCaseData(getEnrichedCaseDetail(recordId));
+            .catch((error: unknown) => {
+                const message = error instanceof Error ? error.message : "";
+                setCaseData(message.includes("404") ? null : getEnrichedCaseDetail(recordId));
             })
             .finally(() => {
                 setLoading(false);

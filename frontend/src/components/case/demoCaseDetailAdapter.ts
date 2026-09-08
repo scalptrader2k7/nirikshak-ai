@@ -1,4 +1,5 @@
 import type {
+    CaseDetailResponse,
     InvestigationCase,
     PeerBenchmark,
     IntegrityPassport,
@@ -72,6 +73,24 @@ export interface EnrichedCaseDetail {
     audit_history: AuditEventItem[];
     related_cases: CaseRelatedItem[];
     is_demo_scenario: boolean;
+}
+
+/** Maps the typed live detail response without consulting the demo corpus. */
+export function getEnrichedLiveCaseDetail(detail: CaseDetailResponse): EnrichedCaseDetail {
+    return {
+        case: detail.case,
+        peer_benchmark: detail.peer_benchmark,
+        integrity_passport: detail.integrity_passport,
+        payment_gate: detail.payment_gate,
+        evidence_ledger: [...detail.evidence.available, ...detail.evidence.derived],
+        evidence_gaps: [...detail.evidence.missing, ...detail.evidence.stale],
+        requested_evidence: [],
+        rate_audit_items: [],
+        citizen_reports: [],
+        audit_history: [],
+        related_cases: [],
+        is_demo_scenario: false,
+    };
 }
 
 /**
