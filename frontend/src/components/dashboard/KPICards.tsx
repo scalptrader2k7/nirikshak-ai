@@ -42,10 +42,10 @@ export const KPICards: React.FC<KPICardsProps> = ({
         );
     }
 
-    const totalRecords = stats.total_records || 742;
-    const highCount = (stats.priority_distribution.HIGH || 35) + (stats.priority_distribution.CRITICAL || 0); // 45 High priority records
-    const medCount = stats.priority_distribution.MEDIUM || 140;
-    const reviewPriorityCount = highCount + medCount; // 185 records (24.9%)
+    const totalRecords = stats.total_records;
+    const highCount = stats.priority_distribution.HIGH + stats.priority_distribution.CRITICAL;
+    const medCount = stats.priority_distribution.MEDIUM;
+    const reviewPriorityCount = highCount + medCount;
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">

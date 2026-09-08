@@ -13,25 +13,42 @@ interface ReviewSummaryStripProps {
     filteredCount: number;
     activePriorityFilter: PriorityLevel | null;
     onSelectPriorityFilter: (priority: PriorityLevel | null) => void;
-    highCount?: number;
-    mediumCount?: number;
-    lowCount?: number;
+    priorityDistribution?: Record<PriorityLevel, number>;
+    source: "live" | "demo";
+    liveCaseCount: number;
 }
 
 export const ReviewSummaryStrip: React.FC<ReviewSummaryStripProps> = ({
-    totalCount = 742,
-    filteredCount = 742,
+    totalCount,
+    filteredCount,
     activePriorityFilter,
     onSelectPriorityFilter,
-    highCount = 45,
-    mediumCount = 140,
-    lowCount = 557,
+    priorityDistribution,
+    source,
+    liveCaseCount,
 }) => {
     const { t } = useLanguage();
     const isFiltered = filteredCount !== totalCount;
+    const highCount = priorityDistribution?.HIGH;
+    const mediumCount = priorityDistribution?.MEDIUM;
+    const lowCount = priorityDistribution?.LOW;
+
+    if (source === "live" && !priorityDistribution) {
+        return (
+            <div className="rounded-xl border border-[#d8d4ca] bg-[#fbfaf8] p-4 text-xs text-[#687487]">
+                Live investigation cases: {liveCaseCount}; full risk distribution available on the dashboard.
+            </div>
+        );
+    }
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+        <div className="space-y-3">
+            {source === "demo" && (
+                <div className="inline-flex items-center rounded border border-[#d8b45c]/40 bg-[#fdf9ee] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b7b32]">
+                    Demo snapshot — not live API data
+                </div>
+            )}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             {/* 1. Total Projects */}
             <button
                 type="button"
@@ -223,6 +240,7 @@ export const ReviewSummaryStrip: React.FC<ReviewSummaryStripProps> = ({
                     </div>
                 </div>
             </button>
+            </div>
         </div>
     );
 };

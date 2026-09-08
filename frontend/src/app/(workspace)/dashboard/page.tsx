@@ -124,10 +124,16 @@ export default function DashboardPage() {
             <DashboardSearchAndTabs
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
-                totalRecords={stats?.total_records || 742}
+                totalRecords={stats?.total_records ?? FALLBACK_STATS.total_records}
                 selectedState={selectedState}
                 onClearStateFilter={() => setSelectedState(null)}
             />
+
+            {!loading && !isLiveConnected && (
+                <div className="inline-flex items-center rounded border border-[#d8b45c]/40 bg-[#fdf9ee] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b7b32]">
+                    Demo snapshot — not live API data
+                </div>
+            )}
 
             {/* ─────────────────────────────────────────────────────────────
           3. SECTION A: EXECUTIVE KPI SUMMARY (6 Genuine Metrics)
@@ -175,7 +181,7 @@ export default function DashboardPage() {
       ───────────────────────────────────────────────────────────── */}
             {(activeTab === "all" || activeTab === "geo") && (
                 <section aria-label="Geographic and Work-Type Intelligence">
-                    <GeoWorkTypePanel totalRecords={stats?.total_records || 742} />
+                    <GeoWorkTypePanel totalRecords={stats?.total_records ?? FALLBACK_STATS.total_records} />
                 </section>
             )}
 
@@ -185,10 +191,10 @@ export default function DashboardPage() {
             {(activeTab === "all" || activeTab === "risk") && (
                 <section aria-label="Anomaly Pattern Insights">
                     <AnomalyPatternInsights
-                        costCount={stats?.detector_distribution.cost || 68}
-                        exactCount={stats?.detector_distribution.exact_duplicate || 34}
-                        nearCount={stats?.detector_distribution.near_duplicate || 89}
-                        patternCount={stats?.detector_distribution.pattern || 42}
+                        costCount={stats?.detector_distribution.cost ?? FALLBACK_STATS.detector_distribution.cost}
+                        exactCount={stats?.detector_distribution.exact_duplicate ?? FALLBACK_STATS.detector_distribution.exact_duplicate}
+                        nearCount={stats?.detector_distribution.near_duplicate ?? FALLBACK_STATS.detector_distribution.near_duplicate}
+                        patternCount={stats?.detector_distribution.pattern ?? FALLBACK_STATS.detector_distribution.pattern}
                     />
                 </section>
             )}

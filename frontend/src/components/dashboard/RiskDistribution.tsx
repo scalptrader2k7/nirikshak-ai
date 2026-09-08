@@ -13,14 +13,14 @@ interface RiskDistributionProps {
 export const RiskDistribution: React.FC<RiskDistributionProps> = ({ stats }) => {
     const { t } = useLanguage();
 
-    const total = stats.total_records || 742;
-    const lowCount = stats.priority_distribution.LOW || 557;
-    const mediumCount = stats.priority_distribution.MEDIUM || 140;
-    const highCount = (stats.priority_distribution.HIGH || 35) + (stats.priority_distribution.CRITICAL || 0); // 45
+    const total = stats.total_records;
+    const lowCount = stats.priority_distribution.LOW;
+    const mediumCount = stats.priority_distribution.MEDIUM;
+    const highCount = stats.priority_distribution.HIGH + stats.priority_distribution.CRITICAL;
 
-    const lowPct = total > 0 ? (lowCount / total) * 100 : 75.1;
-    const mediumPct = total > 0 ? (mediumCount / total) * 100 : 18.9;
-    const highPct = total > 0 ? (highCount / total) * 100 : 6.1;
+    const lowPct = total > 0 ? (lowCount / total) * 100 : 0;
+    const mediumPct = total > 0 ? (mediumCount / total) * 100 : 0;
+    const highPct = total > 0 ? (highCount / total) * 100 : 0;
 
     // SVG Semicircular Arc Math (viewBox="0 0 200 110", cx=100, cy=95, r=75, strokeWidth=18)
     const cx = 100;

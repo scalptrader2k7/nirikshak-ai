@@ -9,7 +9,7 @@ import {
     Upload,
     RefreshCw,
 } from "@/components/shared/Icons";
-import type { Filters, PriorityLevel, CaseListResponse } from "@/api/types";
+import type { Filters, PriorityLevel, CaseListResponse, StatisticsResponse } from "@/api/types";
 import apiClient from "@/api/client";
 import { queryDemoProjects } from "@/api/demoProjectsData";
 import { ReviewSummaryStrip } from "@/components/review/ReviewSummaryStrip";
@@ -17,6 +17,13 @@ import { ReviewSearchAndFilters } from "@/components/review/ReviewSearchAndFilte
 import { ReviewTable } from "@/components/review/ReviewTable";
 import { ProjectPagination } from "@/components/project/ProjectPagination";
 import { useLanguage } from "@/i18n/LanguageContext";
+
+const DEMO_PRIORITY_DISTRIBUTION: StatisticsResponse["priority_distribution"] = {
+    HIGH: 45,
+    MEDIUM: 140,
+    LOW: 557,
+    CRITICAL: 0,
+};
 
 function ReviewQueueContent() {
     const searchParams = useSearchParams();
@@ -60,6 +67,8 @@ function ReviewQueueContent() {
     }, [searchParams]);
 
     const [caseData, setCaseData] = useState<CaseListResponse | null>(null);
+    const [summaryStats, setSummaryStats] = useState<StatisticsResponse | null>(null);
+    const [isDemoData, setIsDemoData] = useState(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
@@ -71,15 +80,26 @@ function ReviewQueueContent() {
 
         try {
             const res = await apiClient.getCases(filters);
-            if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+            if (res && Array.isArray(res.data)) {
                 setCaseData(res);
+                setIsDemoData(false);
+                try {
+                    const statsRes = await apiClient.getStatistics();
+                    setSummaryStats(statsRes && statsRes.total_records ? statsRes : null);
+                } catch {
+                    setSummaryStats(null);
+                }
             } else {
                 const localRes = queryDemoProjects(filters);
                 setCaseData(localRes);
+                setSummaryStats(null);
+                setIsDemoData(true);
             }
         } catch {
             const localRes = queryDemoProjects(filters);
             setCaseData(localRes);
+            setSummaryStats(null);
+            setIsDemoData(true);
         } finally {
             setLoading(false);
         }
@@ -124,8 +144,9 @@ function ReviewQueueContent() {
         setFilters((prev) => ({ ...prev, page_size: newPageSize, page: 1 }));
     };
 
-    const totalRecords = 742;
-    const filteredCount = caseData?.pagination.total_records ?? 742;
+    const totalRecords = summaryStats?.total_records ?? (isDemoData ? 742 : caseData?.pagination.total_records ?? 0);
+    const filteredCount = caseData?.pagination.total_records ?? totalRecords;
+    const priorityDistribution = summaryStats?.priority_distribution ?? (isDemoData ? DEMO_PRIORITY_DISTRIBUTION : null);
 
     const { t } = useLanguage();
 
@@ -160,9 +181,9 @@ function ReviewQueueContent() {
                 filteredCount={filteredCount}
                 activePriorityFilter={filters.priority || null}
                 onSelectPriorityFilter={handlePriorityFilter}
-                highCount={45}
-                mediumCount={140}
-                lowCount={557}
+                {...(priorityDistribution ? { priorityDistribution } : {})}
+                source={isDemoData ? "demo" : "live"}
+                liveCaseCount={caseData?.pagination.total_records ?? 0}
             />
 
             {/* ─────────────────────────────────────────────────────────────
