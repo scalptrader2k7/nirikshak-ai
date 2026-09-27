@@ -10,6 +10,23 @@ client = TestClient(app)
 def setup_api():
     success = load_all_datasets()
     assert success is True, "Failed to load cached datasets for API tests."
+    from src.persistence.database import init_db, get_connection
+    from src.auth.auth_service import provision_user
+    from src.auth.session import create_session, COOKIE_NAME
+    init_db()
+    user = provision_user(
+        email="detail.test.mospi@nirikshak.gov.in",
+        password="TestPassword123!",
+        full_name="MoSPI Detail Tester",
+        role="MOSPI",
+        scope_type="NATIONAL",
+        user_id="test_mospi_detail"
+    )
+    conn = get_connection()
+    raw_token, _ = create_session(conn, user["user_id"])
+    conn.close()
+    client.cookies.set(COOKIE_NAME, raw_token, domain="testserver")
+    client.headers["Authorization"] = f"Bearer {raw_token}"
 
 def test_case_detail_endpoint_valid():
     # 1. Fetch a valid record ID from the cache

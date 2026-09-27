@@ -26,7 +26,8 @@ def get_filtered_cases(
     max_score: Optional[float] = None,
     search: Optional[str] = None,
     sort_by: str = "rank",
-    sort_order: str = "asc"
+    sort_order: str = "asc",
+    allowed_record_ids: Optional[List[int]] = None
 ) -> Tuple[List[Dict[str, Any]], int, int]:
     """
     Applies filters, search query, sorting, and pagination to the cached investigation cases.
@@ -37,6 +38,8 @@ def get_filtered_cases(
     
     # 1. Apply Filtering
     for case in cases:
+        if allowed_record_ids is not None and int(case.get("record_id", -1)) not in allowed_record_ids:
+            continue
         # Priority check (exact, e.g. LOW, MEDIUM, HIGH, CRITICAL)
         if priority is not None and str(case.get("investigation_priority_level")).upper() != priority.upper():
             continue

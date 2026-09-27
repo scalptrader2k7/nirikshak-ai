@@ -1,0 +1,13 @@
+asset_id,asset_name,asset_category,registration_date,registration_status,handover_to,latitude,longitude,record_id,is_demo_enrichment,data_source,source_classification
+AST-2024-RD-026,Karauli Sector 4 Link Road,Rural Infrastructure - Road,2024-04-15,REGISTERED,Zilla Parishad Karauli,26.5052,77.0248,26,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-EL-010,Darbhanga High Mast Lighting System,Electrical / Municipal Lighting,2024-04-10,PENDING_REGISTRATION,Darbhanga Municipal Corporation,26.1548,85.8924,10,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2023-EL-075,Chevella Village 25kVA Substation Unit,Electrical / Substation,2023-09-15,PENDING_REGISTRATION,TSSPDCL Operation Division,17.3065,78.1364,75,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2023-BL-208,Dindori Community Hall,Community Infrastructure,2023-10-20,REGISTERED,Gram Panchayat Dindori,20.2036,73.8345,208,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-BL-230,Haveri Govt Higher Primary School Additional Classroom,Educational Facility,2024-04-05,REGISTERED,Dept of School Education Haveri,14.7954,75.3986,230,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-BL-170,Ramanathapuram Anganwadi Centre,Child Development Center,2024-04-12,PENDING_REGISTRATION,ICDS Project Officer Ramanathapuram,9.3644,78.8398,170,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-EL-350,Baripada Ward 8 LED Lighting Cluster,Electrical / Municipal Lighting,2024-05-02,REGISTERED,Baripada Municipality,21.9324,86.7265,350,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2023-EL-205,Baramullah Solar Lighting Unit,Renewable Energy / Solar,2024-03-01,REGISTERED,Gram Panchayat Baramullah,34.2094,74.3435,205,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-WT-450,Lucknow Rural Tubewell Point 4,Water Supply / Tubewell,2024-03-30,PENDING_REGISTRATION,UP Jal Nigam (Rural),26.8471,80.9467,450,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-WT-512,India Mark II Hand Pump Unit 3,Water Supply / Hand Pump,2024-03-25,REGISTERED,Jal Sansthan Lucknow,26.8524,80.9525,512,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-RD-117,Bengaluru North Rural Link Road,Road Infrastructure,2024-04-10,NOT_REGISTERED,PWD Karnataka (Rural Roads),12.97164,77.59462,117,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION
+AST-2024-RD-120,Bengaluru North Paver Road Package 2,Road Infrastructure,2024-04-10,PENDING_REGISTRATION,PWD Karnataka (Rural Roads),12.97228,77.59515,120,True,DEMONSTRATION_LIFECYCLE_DATA,SYNTHETIC_DEMONSTRATION

@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.config import API_PREFIX, ALLOWED_ORIGINS, SERVICE_NAME, VERSION
-from src.api.routes import health, cases, statistics
+from src.api.routes import health, cases, statistics, projects, workflow, analytics, auth, system
 from src.api.data_loader import load_all_datasets
+from src.persistence.database import init_db
 
 app = FastAPI(
     title=SERVICE_NAME,
@@ -28,8 +29,15 @@ def startup_event():
         print("FastAPI: Pre-caching complete.")
     else:
         print("FastAPI WARNING: Pre-caching failed. Verify raw/processed files exist.")
+    init_db()
 
 # Include routers
 app.include_router(health.router, prefix=API_PREFIX)
 app.include_router(cases.router, prefix=API_PREFIX)
 app.include_router(statistics.router, prefix=API_PREFIX)
+app.include_router(projects.router, prefix=API_PREFIX)
+app.include_router(workflow.router, prefix=API_PREFIX)
+app.include_router(analytics.router, prefix=API_PREFIX)
+app.include_router(auth.router, prefix=API_PREFIX)
+app.include_router(system.router, prefix=API_PREFIX)
+
