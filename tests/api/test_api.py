@@ -12,6 +12,23 @@ def setup_api_data():
     # Guarantee datasets are loaded in memory
     success = load_all_datasets()
     assert success == True, "Failed to load pre-calculated datasets for API tests."
+    from src.persistence.database import init_db, get_connection
+    from src.auth.auth_service import provision_user
+    from src.auth.session import create_session, COOKIE_NAME
+    init_db()
+    user = provision_user(
+        email="api.test.mospi@nirikshak.gov.in",
+        password="TestPassword123!",
+        full_name="MoSPI API Tester",
+        role="MOSPI",
+        scope_type="NATIONAL",
+        user_id="test_mospi_api"
+    )
+    conn = get_connection()
+    raw_token, _ = create_session(conn, user["user_id"])
+    conn.close()
+    client.cookies.set(COOKIE_NAME, raw_token, domain="testserver")
+    client.headers["Authorization"] = f"Bearer {raw_token}"
 
 def test_health_endpoint():
     response = client.get(f"{API_PREFIX}/health")

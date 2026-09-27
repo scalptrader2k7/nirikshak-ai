@@ -129,8 +129,18 @@ def get_verification_cases() -> List[Dict[str, Any]]:
         load_all_datasets()
     return _VERIFICATION_CACHE if _VERIFICATION_CACHE is not None else []
 
+def get_features_df() -> pd.DataFrame:
+    """
+    Retrieves the features DataFrame.
+    """
+    global _FEATURES_DF_CACHE
+    if _FEATURES_DF_CACHE is None:
+        load_all_datasets()
+    return _FEATURES_DF_CACHE if _FEATURES_DF_CACHE is not None else pd.DataFrame()
+
 def is_loaded() -> bool:
     """
     Checks if datasets have been successfully loaded.
     """
     return _DATA_LOADED
+

@@ -32,6 +32,8 @@ backend/.mypy_cache/
 # Local database and generated data
 backend/nirikshak.db
 backend/*.db
+data/runtime/
+*.db
 data/processed/*
 !data/processed/.gitkeep
 

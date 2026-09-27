@@ -389,3 +389,175 @@ FastAPI/Pydantic schema validation failures (e.g. `page_size > 100` or alphabeti
   ]
 }
 ```
+
+---
+
+## 5. Phase B2 Authentication & Session Endpoints
+
+### A. Login
+Authenticates user credentials and attaches HttpOnly cookie.
+* **Method**: `POST`
+* **Path**: `/auth/login`
+* **Request Body**:
+  ```json
+  {
+    "email": "officer@nic.in",
+    "password": "SecurePassword123",
+    "requested_portal": "DISTRICT_AUTHORITY"
+  }
+  ```
+* **Response (200 OK)**:
+  ```json
+  {
+    "user": {
+      "user_id": "USR-1A2B3C4D",
+      "email": "officer@nic.in",
+      "full_name": "Shri K. Sharma",
+      "role": "DISTRICT_AUTHORITY",
+      "is_active": true,
+      "onboarding_completed": false,
+      "designation": "District Monitoring Officer",
+      "phone": "+91-9876543210",
+      "scope": {
+        "scope_id": "SCP-A1B2C3D4",
+        "scope_type": "DISTRICT",
+        "state": "Karnataka",
+        "district": "Bangalore Urban",
+        "constituency": null,
+        "mp_name": null
+      },
+      "recommended_portal": "DISTRICT_AUTHORITY"
+    },
+    "message": "Login successful."
+  }
+  ```
+
+### B. Current User Session
+Validates current session from `nirikshak_session` cookie.
+* **Method**: `GET`
+* **Path**: `/auth/me`
+* **Response (200 OK)**:
+  ```json
+  {
+    "authenticated": true,
+    "user_id": "USR-1A2B3C4D",
+    "email": "officer@nic.in",
+    "full_name": "Shri K. Sharma",
+    "role": "DISTRICT_AUTHORITY",
+    "scope": {
+      "scope_id": "SCP-A1B2C3D4",
+      "scope_type": "DISTRICT",
+      "state": "Karnataka",
+      "district": "Bangalore Urban"
+    },
+    "onboarding_completed": true,
+    "designation": "District Monitoring Officer",
+    "phone": "+91-9876543210",
+    "recommended_portal": "DISTRICT_AUTHORITY"
+  }
+  ```
+* **Response (401 Unauthorized)**:
+  ```json
+  {
+    "detail": "Authentication required. Please log in."
+  }
+  ```
+
+### C. Logout
+Revokes session in database and clears HttpOnly cookie.
+* **Method**: `POST`
+* **Path**: `/auth/logout`
+* **Response (200 OK)**:
+  ```json
+  {
+    "message": "Logged out successfully."
+  }
+  ```
+
+### D. Portal Access Verification
+Verifies whether the authenticated user's authoritative role permits access to the requested portal.
+* **Method**: `POST`
+* **Path**: `/auth/portal-access`
+* **Request Body**:
+  ```json
+  {
+    "portal": "MOSPI"
+  }
+  ```
+* **Response (200 OK)**:
+  ```json
+  {
+    "allowed": false,
+    "actual_role": "DISTRICT_AUTHORITY",
+    "recommended_portal": "DISTRICT_AUTHORITY"
+  }
+  ```
+
+### E. Onboarding Profile Management
+* **Method**: `GET` / `PATCH`
+* **Path**: `/auth/onboarding`
+* **Request Body (PATCH)**:
+  ```json
+  {
+    "full_name": "Shri K. Sharma, IAS",
+    "designation": "Additional District Magistrate",
+    "phone": "+91-9988776655"
+  }
+  ```
+*(Note: Passing `role` or `scope` is forbidden and rejected by the API schema).*
+
+### F. Complete Onboarding
+* **Method**: `POST`
+* **Path**: `/auth/onboarding/complete`
+* **Response (200 OK)**:
+  ```json
+  {
+    "user_id": "USR-1A2B3C4D",
+    "email": "officer@nic.in",
+    "onboarding_completed": true,
+    "message": "Onboarding completed successfully."
+  }
+  ```
+
+### G. Workflow Mutation Authorization Rules
+All state-changing investigation workflow operations strictly require an active, authenticated backend session:
+* **Endpoints**:
+  * `PATCH /cases/{record_id}/workflow/status`
+  * `POST /cases/{record_id}/reviews`
+  * `POST /cases/{record_id}/evidence-requests`
+  * `PATCH /cases/{record_id}/evidence-requests/{request_id}`
+* **Enforcement**:
+  * If unauthenticated: **HTTP 401 Unauthorized** (`{"detail": "Authentication required. Please log in."}`).
+  * Authorized Operational Mutation Roles: `DISTRICT_AUTHORITY` is the ONLY official user-facing portal role authorized to mutate operational investigation workflows (within authorized mapped district). `ADMIN` and `INVESTIGATOR` are strictly internal compatibility/service capabilities retained for backend maintenance and test fixtures, and are never user-facing portal roles.
+  * Blocked Oversight / Monitoring Roles: `MOSPI` (oversee only), `STATE_NODAL_AUTHORITY` (coordinate only), `MP` (monitor only), and `CITIZEN` (public views only) are strictly blocked from mutating operational workflows (`HTTP 403 Forbidden`).
+  * Identity Binding: `user_id`, `role`, `reviewer_id`, and `requested_by` are strictly derived from the authenticated session. Client-supplied identities in request bodies are ignored.
+
+### H. Evidence-Item State Machine & Schema
+Evidence verification follows an explicit separate state machine independent of overall case status:
+* **Status Lifecycle**:
+  `REQUESTED` ──→ `RECEIVED` ──→ `UNDER_VERIFICATION` ──┬──→ `VERIFIED` (Terminal)
+                                                        └──→ `REJECTED` (Terminal)
+* **Direct Jump Restrictions**:
+  Direct jumps skipping `UNDER_VERIFICATION` (`REQUESTED -> VERIFIED`, `REQUESTED -> REJECTED`, `RECEIVED -> VERIFIED`, `RECEIVED -> REJECTED`) are strictly prohibited and return **HTTP 400 Bad Request**.
+* **Rejection Semantics**:
+  `REJECTED` indicates that the specific evidence item failed technical or audit verification. It does NOT reject or close the overall case.
+* **Evidence Data Model Fields**:
+  * `evidence_request_id` (string): Request identifier (e.g. `REQ-1A2B3C4D`).
+  * `case_id` / `record_id` (integer): Project/case identifier.
+  * `evidence_type` (string): e.g. `site_photo`, `measurement_book`, `lab_quality_test`.
+  * `status` (string): `REQUESTED`, `RECEIVED`, `UNDER_VERIFICATION`, `VERIFIED`, `REJECTED`.
+  * `requested_at` (RFC-3339 string): Timestamp of initial request.
+  * `received_at` (RFC-3339 string | null): Timestamp when evidence was received.
+  * `verification_started_at` (RFC-3339 string | null): Timestamp when verification commenced.
+  * `verified_at` (RFC-3339 string | null): Timestamp of successful verification.
+  * `rejected_at` (RFC-3339 string | null): Timestamp of rejection.
+  * `reviewer_user_id` / `verified_by` (string | null): Authenticated session user.
+  * `reviewer_role` (string | null): Authenticated session role.
+  * `verification_note` (string | null): Reviewer notes.
+  * `verification_result` (string | null): Detailed result code.
+  * `rejection_reason` (string | null): Mandatory audit reason when rejected.
+  * `evidence_reference` (string | null): External reference or document index.
+  * `metadata` (object | null): Structured JSON metadata.
+* **Storage Limitation & Authenticity Scope**:
+  Physical file/photo storage is deferred and NOT implemented. Evidence tracking operates via references and metadata only. The `VERIFIED` status indicates that an evidence item was marked verified by an authorized District reviewer after review, but does not assert cryptographic authenticity, tamper-proofing, or independent forensic proof.
+
