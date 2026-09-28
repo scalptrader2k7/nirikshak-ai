@@ -7,6 +7,7 @@ from fastapi import Response
 
 COOKIE_NAME = os.getenv("NIRIKSHAK_COOKIE_NAME", "nirikshak_session")
 COOKIE_SECURE = os.getenv("NIRIKSHAK_COOKIE_SECURE", "false").lower() in ("true", "1", "yes")
+COOKIE_SAMESITE = os.getenv("NIRIKSHAK_COOKIE_SAMESITE", "lax").lower()
 SESSION_LIFETIME_HOURS = int(os.getenv("NIRIKSHAK_SESSION_HOURS", "12"))
 
 def _now_iso() -> str:
@@ -136,7 +137,7 @@ def set_session_cookie(response: Response, raw_token: str) -> None:
         value=raw_token,
         max_age=max_age,
         httponly=True,
-        samesite="lax",
+        samesite=COOKIE_SAMESITE,
         path="/",
         secure=COOKIE_SECURE
     )
@@ -149,6 +150,6 @@ def clear_session_cookie(response: Response) -> None:
         key=COOKIE_NAME,
         path="/",
         httponly=True,
-        samesite="lax",
+        samesite=COOKIE_SAMESITE,
         secure=COOKIE_SECURE
     )

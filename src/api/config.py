@@ -6,10 +6,22 @@ VERSION = "1.0.0"
 SERVICE_NAME = "NIRIKSHAK AI API"
 
 # Allowed CORS origins
-ALLOWED_ORIGINS = [
+_DEFAULT_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173"
 ]
+
+_env_origins = os.getenv("NIRIKSHAK_ALLOWED_ORIGINS") or os.getenv("ALLOWED_ORIGINS")
+if _env_origins:
+    ALLOWED_ORIGINS = [
+        origin.strip()
+        for origin in _env_origins.split(",")
+        if origin.strip()
+    ]
+else:
+    ALLOWED_ORIGINS = _DEFAULT_ORIGINS
+
+
 
 # Project relative file paths
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
